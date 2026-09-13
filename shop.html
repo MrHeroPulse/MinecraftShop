@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍎 Магазин боксов Minecraft</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    background: linear-gradient(145deg, #1e2b1e 0%, #2a3f2a 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5rem 1rem 2rem;
+    color: #e0f0e0;
+}
+
+h1 {
+    font-size: 2.5rem;
+    text-shadow: 0 0 8px #7cfc00;
+    margin-bottom: 0.5rem;
+    color: #d4ffb0;
+    text-align: center;
+}
+
+.subhead {
+    margin-bottom: 2.5rem;
+    font-style: italic;
+    color: #b8e0b8;
+    font-size: 1.1rem;
+    background: #1f2e1f;
+    padding: 0.3rem 1.5rem;
+    border-radius: 40px;
+    border: 1px solid #5a8f5a;
+    text-align: center;
+}
+
+.boxes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    max-width: 1200px;
+    width: 100%;
+    margin-bottom: 3rem;
+}
+
+.box-card {
+    background: #1b2a1b;
+    border: 3px solid #3f6b3f;
+    border-radius: 28px;
+    padding: 1.8rem 1.5rem;
+    width: 280px;
+    box-shadow: 0 8px 16px -6px black;
+    transition: border-color 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.box-card:hover {
+    border-color: #9fdf9f;
+}
+
+.box-emoji { font-size: 3.5rem; text-align: center; margin-bottom: 0.3rem; }
+
+.box-name {
+    font-size: 1.9rem;
+    font-weight: 800;
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+}
+
+.box-price {
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-align: center;
+    color: #ffd966;
+    margin-bottom: 1rem;
+    background: #263f26;
+    padding: 0.3rem;
+    border-radius: 60px;
+    border: 1px solid #5e8f5e;
+}
+
+.loot-list { list-style: none; margin: 0.8rem 0 1.3rem; flex-grow: 1; }
+
+.loot-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.4rem 0.2rem;
+    border-bottom: 1px dashed #3f6b3f;
+    font-size: 1rem;
+}
+
+.loot-list li:last-child { border-bottom: none; }
+.item-icon { font-size: 1.3rem; width: 28px; text-align: center; }
+
+.buy-btn {
+    background: linear-gradient(180deg, #4caf50, #2e7d32);
+    border: none;
+    border-radius: 50px;
+    padding: 0.9rem 1rem;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 1px 2px black;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #1b4d1b;
+    transition: 0.07s ease;
+    letter-spacing: 1px;
+    margin-top: auto;
+    font-family: inherit;
+    width: 100%;
+}
+
+.buy-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #1b4d1b; }
+.buy-btn:hover { background: linear-gradient(180deg, #66bb6a, #388e3c); }
+
+.box-common .box-name { color: #b0b0b0; }
+.box-rare .box-name { color: #4fc3f7; }
+.box-legendary .box-name { color: #ffb74d; }
+.box-common { border-color: #6b6b6b; }
+.box-rare { border-color: #3f7f9f; }
+.box-legendary { border-color: #b87c1e; background: #2a2318; }
+.box-legendary .box-price { background: #3f2e0e; border-color: #d4a017; }
+
+.top-bar {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 1500;
+}
+
+.inbox-btn {
+    position: relative;
+    background: #1f2e1f;
+    border: 3px solid #5e8f5e;
+    color: #e0f0e0;
+    border-radius: 50px;
+    padding: 0.7rem 1.4rem 0.7rem 1rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 5px 12px -4px black;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.inbox-btn:hover { border-color: #9fdf9f; }
+.inbox-btn .bell { font-size: 1.4rem; }
+
+.badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ff3d3d;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 800;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    border: 2px solid #1f2e1f;
+}
+
+.badge.hidden { display: none; }
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 2000;
+    padding: 1rem;
+}
+
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+.modal {
+    background: #1f2e1f;
+    border: 3px solid #5e8f5e;
+    border-radius: 28px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 0 30px #7cfc0055;
+    transform: scale(0.9);
+    transition: transform 0.2s;
+}
+
+.modal-overlay.active .modal { transform: scale(1); }
+
+.modal h2 {
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 0.3rem;
+    color: #d4ffb0;
+}
+
+.modal .modal-sub {
+    text-align: center;
+    color: #b8e0b8;
+    margin-bottom: 1.5rem;
+}
+
+.modal .modal-sub strong { color: #ffd966; }
+
+.modal label {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #c0e0c0;
+}
+
+.modal input {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    font-size: 1.1rem;
+    border-radius: 60px;
+    border: 2px solid #3f6b3f;
+    background: #152015;
+    color: #f0fff0;
+    outline: none;
+    margin-bottom: 1.5rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.modal input:focus { border-color: #7cfc00; }
+.modal input.error { border-color: #ff5252; }
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+}
+
+.modal input.error { animation: shake 0.3s; }
+
+.modal-buttons { display: flex; gap: 1rem; }
+
+.modal-buttons button {
+    flex: 1;
+    padding: 0.9rem 1rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 60px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: 0.1s;
+}
+
+.btn-cancel { background: #3a3a3a; color: #ccc; box-shadow: 0 4px 0 #1f1f1f; }
+.btn-cancel:hover { background: #4a4a4a; }
+.btn-cancel:active { transform: translateY(3px); box-shadow: 0 1px 0 #1f1f1f; }
+
+.btn-pay {
+    background: linear-gradient(180deg, #4caf50, #2e7d32);
+    color: white;
+    box-shadow: 0 4px 0 #1b4d1b;
+    text-shadow: 0 1px 2px black;
+}
+.btn-pay:hover { background: linear-gradient(180deg, #66bb6a, #388e3c); }
+.btn-pay:active { transform: translateY(3px); box-shadow: 0 1px 0 #1b4d1b; }
+
+.password-modal { border-color: #4fc3f7; box-shadow: 0 0 30px #4fc3f755; }
+.password-modal h2 { color: #b3e5fc; }
+.password-modal input:focus { border-color: #4fc3f7; }
+
+.inbox-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 420px;
+    max-width: 100vw;
+    background: #17221a;
+    border-left: 3px solid #3f6b3f;
+    box-shadow: -10px 0 25px -8px black;
+    transform: translateX(105%);
+    transition: transform 0.3s;
+    z-index: 2500;
+    display: flex;
+    flex-direction: column;
+    will-change: transform;
+}
+
+.inbox-panel.open { transform: translateX(0); }
+
+.inbox-header {
+    padding: 1.2rem 1.3rem 1rem;
+    border-bottom: 2px solid #3f6b3f;
+    background: #1d2b1f;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    flex-shrink: 0;
+}
+
+.inbox-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.inbox-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #d4ffb0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.inbox-close {
+    background: transparent;
+    border: 2px solid #5e8f5e;
+    color: #d0f0d0;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.inbox-close:hover { background: #3f6b3f; }
+
+.inbox-stats {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #b8e0b8;
+    flex-wrap: wrap;
+}
+
+.inbox-stats .counters { display: flex; gap: 0.9rem; }
+.counter-item { display: flex; align-items: center; gap: 5px; }
+
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.dot.unread { background: #ff3d3d; }
+.dot.read { background: #4caf50; }
+
+.mark-all-btn {
+    background: #2e4a2e;
+    border: 2px solid #5e8f5e;
+    color: #d0f0d0;
+    border-radius: 40px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.mark-all-btn:hover { background: #3f6b3f; }
+.mark-all-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.inbox-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+.inbox-empty {
+    text-align: center;
+    color: #7f9f7f;
+    padding: 3rem 1rem;
+    font-style: italic;
+}
+
+.msg-card {
+    background: #1f2e1f;
+    border: 2px solid #3f6b3f;
+    border-left: 6px solid #4fc3f7;
+    border-radius: 16px;
+    padding: 0.9rem 1rem;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+}
+
+.msg-card:hover { background: #263a26; }
+.msg-card.unread { border-left-color: #ff3d3d; background: #263022; }
+.msg-card.unread::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ff3d3d;
+}
+.msg-card.read { border-left-color: #4caf50; opacity: 0.85; }
+
+.msg-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.4rem;
+}
+
+.msg-status {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 40px;
+}
+
+.msg-status.unread { background: #4a1515; color: #ff8a8a; border: 1px solid #ff3d3d; }
+.msg-status.read { background: #163a1a; color: #9fdf9f; border: 1px solid #4caf50; }
+.msg-time { font-size: 0.75rem; color: #8faf8f; }
+.msg-text { font-size: 0.95rem; line-height: 1.4; padding-right: 1.2rem; }
+.msg-text strong { color: #ffd966; }
+.msg-hint { font-size: 0.72rem; color: #7f9f7f; margin-top: 0.4rem; font-style: italic; }
+
+.notifications-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 3000;
+    max-width: 360px;
+    width: 100%;
+    pointer-events: none;
+}
+
+.notif {
+    background: #1f2e1f;
+    border-left: 6px solid #7cfc00;
+    border-radius: 16px;
+    padding: 1rem 1.3rem;
+    box-shadow: 0 5px 15px -5px black;
+    font-size: 0.95rem;
+    pointer-events: auto;
+    transform: translateX(120%);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.25s;
+}
+
+.notif.show { transform: translateX(0); opacity: 1; }
+.notif-title { font-weight: 800; color: #ffd966; margin-bottom: 0.3rem; }
+.notif-body { color: #d0f0d0; line-height: 1.35; }
+.notif-body strong { color: #fff; background: #2e4a2e; padding: 0 6px; border-radius: 8px; }
+.notif-time { font-size: 0.75rem; color: #8faf8f; margin-top: 0.35rem; text-align: right; }
+
+.notif.info { border-left-color: #4fc3f7; }
+.notif.success { border-left-color: #7cfc00; }
+.notif.purchase { border-left-color: #ffb74d; }
+
+@media (max-width: 700px) {
+    h1 { font-size: 1.8rem; }
+    .box-card { width: 100%; max-width: 350px; }
+    .inbox-panel { width: 100vw; }
+    .notifications-container { top: 10px; right: 10px; left: 10px; max-width: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+    <button class="inbox-btn" id="inboxBtn">
+        <span class="bell">📬</span>
+        <span>Сообщения</span>
+        <span class="badge hidden" id="inboxBadge">0</span>
+    </button>
+</div>
+
+<h1>⛏️ БОКСЫ MINECRAFT ⛏️</h1>
+<div class="subhead">Выбирай, покупай, получай лут!</div>
+
+<div class="boxes-grid" id="boxesContainer"></div>
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <h2 id="modalTitle">Покупка бокса</h2>
+        <div class="modal-sub" id="modalSub">Введите ваш ник для оплаты</div>
+        <label for="nicknameInput">Ваш игровой ник:</label>
+        <input type="text" id="nicknameInput" placeholder="Например: Steve_2025" maxlength="20" autocomplete="off">
+        <div class="modal-buttons">
+            <button class="btn-cancel" id="cancelBtn">Отмена</button>
+            <button class="btn-pay" id="payBtn">Оплатить</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="passwordOverlay">
+    <div class="modal password-modal">
+        <h2>🔒 Вход в сообщения</h2>
+        <div class="modal-sub">Введите пароль для доступа</div>
+        <label for="passwordInput">Пароль:</label>
+        <input type="password" id="passwordInput" placeholder="••••••••" autocomplete="off">
+        <div class="modal-buttons">
+            <button class="btn-cancel" id="passwordCancel">Отмена</button>
+            <button class="btn-pay" id="passwordSubmit">Войти</button>
+        </div>
+    </div>
+</div>
+
+<div class="inbox-panel" id="inboxPanel">
+    <div class="inbox-header">
+        <div class="inbox-header-top">
+            <div class="inbox-title">📬 Сообщения</div>
+            <button class="inbox-close" id="inboxClose">✕</button>
+        </div>
+        <div class="inbox-stats">
+            <div class="counters">
+                <div class="counter-item">
+                    <span class="dot unread"></span>
+                    <span>Не прочитано: <strong id="unreadCount">0</strong></span>
+                </div>
+                <div class="counter-item">
+                    <span class="dot read"></span>
+                    <span>Прочитано: <strong id="readCount">0</strong></span>
+                </div>
+            </div>
+            <button class="mark-all-btn" id="markAllBtn" disabled>Отметить всё прочитанным</button>
+        </div>
+    </div>
+    <div class="inbox-list" id="inboxList"></div>
+</div>
+
+<div class="notifications-container" id="notificationsContainer"></div>
+
+<script>
+var INBOX_PASSWORD = 'mZciG12x';
+
+var boxes = [
+    { id: 'common', name: 'ОБЫЧНЫЙ', emoji: '📦', price: 50, className: 'box-common',
+      items: [
+        { icon: '🍎', text: '32 яблока' },
+        { icon: '🛡️', text: 'Полный сет железной брони' },
+        { icon: '⛏️', text: 'Железная кирка' }
+      ] },
+    { id: 'rare', name: 'РЕДКИЙ', emoji: '🎁', price: 100, className: 'box-rare',
+      items: [
+        { icon: '🥩', text: '32 стейка' },
+        { icon: '💎', text: 'Полный сет алмазной брони' },
+        { icon: '⚔️', text: 'Алмазный меч' }
+      ] },
+    { id: 'legendary', name: 'ЛЕГЕНДАРНЫЙ', emoji: '👑', price: 500, className: 'box-legendary',
+      items: [
+        { icon: '🖤', text: 'Полный сет незеритовой брони' },
+        { icon: '🍏', text: '64 золотых яблока' },
+        { icon: '🪽', text: 'Элитры' },
+        { icon: '🐉', text: 'Голова дракона' },
+        { icon: '🎆', text: '2 стака фейерверков' }
+      ] }
+];
+
+var currentBox = null;
+var messages = [];
+
+var boxesContainer = document.getElementById('boxesContainer');
+var modalOverlay = document.getElementById('modalOverlay');
+var modalTitle = document.getElementById('modalTitle');
+var modalSub = document.getElementById('modalSub');
+var nicknameInput = document.getElementById('nicknameInput');
+var cancelBtn = document.getElementById('cancelBtn');
+var payBtn = document.getElementById('payBtn');
+var passwordOverlay = document.getElementById('passwordOverlay');
+var passwordInput = document.getElementById('passwordInput');
+var passwordCancel = document.getElementById('passwordCancel');
+var passwordSubmit = document.getElementById('passwordSubmit');
+var notificationsContainer = document.getElementById('notificationsContainer');
+var inboxBtn = document.getElementById('inboxBtn');
+var inboxBadge = document.getElementById('inboxBadge');
+var inboxPanel = document.getElementById('inboxPanel');
+var inboxClose = document.getElementById('inboxClose');
+var inboxList = document.getElementById('inboxList');
+var unreadCountEl = document.getElementById('unreadCount');
+var readCountEl = document.getElementById('readCount');
+var markAllBtn = document.getElementById('markAllBtn');
+
+function formatTime() {
+    var d = new Date();
+    return ('0' + d.getHours()).slice(-2) + ':' +
+           ('0' + d.getMinutes()).slice(-2) + ':' +
+           ('0' + d.getSeconds()).slice(-2);
+}
+
+function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+    });
+}
+
+function showNotification(title, body, type, duration) {
+    type = type || 'info';
+    duration = duration || 4000;
+    var notif = document.createElement('div');
+    notif.className = 'notif ' + type;
+    notif.innerHTML =
+        '<div class="notif-title">' + title + '</div>' +
+        '<div class="notif-body">' + body + '</div>' +
+        '<div class="notif-time">' + formatTime() + '</div>';
+    notificationsContainer.appendChild(notif);
+    requestAnimationFrame(function() { notif.classList.add('show'); });
+    setTimeout(function() {
+        notif.classList.remove('show');
+        setTimeout(function() { notif.remove(); }, 400);
+    }, duration);
+}
+
+function addMessage(nickname, boxName, price) {
+    messages.unshift({
+        id: Date.now() + Math.random(),
+        nickname: nickname, boxName: boxName, price: price,
+        time: formatTime(), read: false
+    });
+    renderMessages();
+    updateBadge();
+}
+
+function markAsRead(id) {
+    for (var i = 0; i < messages.length; i++) {
+        if (messages[i].id === id && !messages[i].read) {
+            messages[i].read = true;
+            renderMessages();
+            updateBadge();
+            return;
+        }
+    }
+}
+
+function markAllAsRead() {
+    var changed = false;
+    for (var i = 0; i < messages.length; i++) {
+        if (!messages[i].read) { messages[i].read = true; changed = true; }
+    }
+    if (changed) { renderMessages(); updateBadge(); }
+}
+
+function updateBadge() {
+    var unread = 0;
+    for (var i = 0; i < messages.length; i++) if (!messages[i].read) unread++;
+    if (unread > 0) {
+        inboxBadge.textContent = unread > 99 ? '99+' : unread;
+        inboxBadge.classList.remove('hidden');
+    } else {
+        inboxBadge.classList.add('hidden');
+    }
+}
+
+function renderMessages() {
+    var unread = 0;
+    for (var i = 0; i < messages.length; i++) if (!messages[i].read) unread++;
+    var read = messages.length - unread;
+    unreadCountEl.textContent = unread;
+    readCountEl.textContent = read;
+    markAllBtn.disabled = unread === 0;
+
+    if (messages.length === 0) {
+        inboxList.innerHTML = '<div class="inbox-empty">📭 Пока нет сообщений.<br>Купите бокс — и здесь появятся уведомления о покупках.</div>';
+        return;
+    }
+
+    var html = '';
+    messages.forEach(function(msg, idx) {
+        html += '<div class="msg-card ' + (msg.read ? 'read' : 'unread') + '" data-idx="' + idx + '">' +
+            '<div class="msg-top">' +
+                '<span class="msg-status ' + (msg.read ? 'read' : 'unread') + '">' +
+                    (msg.read ? '✓ Прочитано' : '● Не прочитано') +
+                '</span>' +
+                '<span class="msg-time">' + msg.time + '</span>' +
+            '</div>' +
+            '<div class="msg-text">' +
+                'Игрок <strong>' + escapeHtml(msg.nickname) + '</strong> купил ' +
+                '<strong>' + escapeHtml(msg.boxName) + '</strong> бокс за ' +
+                '<strong>' + msg.price + ' ₽</strong>.' +
+            '</div>' +
+            (msg.read ? '' : '<div class="msg-hint">Нажмите, чтобы отметить как прочитанное</div>') +
+        '</div>';
+    });
+    inboxList.innerHTML = html;
+
+    var cards = inboxList.querySelectorAll('.msg-card');
+    for (var i = 0; i < cards.length; i++) {
+        (function(card) {
+            card.addEventListener('click', function() {
+                var idx = parseInt(card.getAttribute('data-idx'), 10);
+                if (messages[idx] && !messages[idx].read) {
+                    markAsRead(messages[idx].id);
+                }
+            });
+        })(cards[i]);
+    }
+}
+
+function renderBoxes() {
+    var html = '';
+    boxes.forEach(function(box, idx) {
+        var itemsHtml = '';
+        box.items.forEach(function(item) {
+            itemsHtml += '<li><span class="item-icon">' + item.icon + '</span><span>' + item.text + '</span></li>';
+        });
+
+        html += '<div class="box-card ' + box.className + '" data-box-idx="' + idx + '">' +
+            '<div class="box-emoji">' + box.emoji + '</div>' +
+            '<div class="box-name">' + box.name + '</div>' +
+            '<div class="box-price">' + box.price + ' ₽</div>' +
+            '<ul class="loot-list">' + itemsHtml + '</ul>' +
+            '<button class="buy-btn" data-buy-idx="' + idx + '">КУПИТЬ</button>' +
+        '</div>';
+    });
+    boxesContainer.innerHTML = html;
+
+    var buyBtns = boxesContainer.querySelectorAll('.buy-btn');
+    for (var i = 0; i < buyBtns.length; i++) {
+        (function(btn) {
+            btn.addEventListener('click', function() {
+                var idx = parseInt(btn.getAttribute('data-buy-idx'), 10);
+                if (boxes[idx]) openModal(boxes[idx]);
+            });
+        })(buyBtns[i]);
+    }
+}
+
+function openModal(box) {
+    currentBox = box;
+    modalTitle.textContent = 'Покупка: ' + box.name;
+    modalSub.innerHTML = 'Цена: <strong>' + box.price + ' ₽</strong>. Введите ваш ник, чтобы оплатить.';
+    nicknameInput.value = '';
+    nicknameInput.classList.remove('error');
+    modalOverlay.classList.add('active');
+    setTimeout(function() { nicknameInput.focus(); }, 100);
+}
+
+function closeModal() {
+    modalOverlay.classList.remove('active');
+    currentBox = null;
+    nicknameInput.classList.remove('error');
+}
+
+function openPasswordModal() {
+    passwordInput.value = '';
+    passwordInput.classList.remove('error');
+    passwordOverlay.classList.add('active');
+    setTimeout(function() { passwordInput.focus(); }, 100);
+}
+
+function closePasswordModal() {
+    passwordOverlay.classList.remove('active');
+    passwordInput.classList.remove('error');
+}
+
+function checkPassword() {
+    if (passwordInput.value === INBOX_PASSWORD) {
+        closePasswordModal();
+        inboxPanel.classList.add('open');
+        showNotification('🔓 Доступ разрешён', 'Добро пожаловать в сообщения!', 'success', 2500);
+    } else {
+        passwordInput.classList.add('error');
+        passwordInput.value = '';
+        passwordInput.focus();
+        showNotification('❌ Неверный пароль', 'Попробуйте ещё раз.', 'info', 2500);
+    }
+}
+
+function handlePayment() {
+    if (!currentBox) return;
+    var nickname = nicknameInput.value.trim();
+
+    if (nickname.length < 3) {
+        nicknameInput.classList.add('error');
+        nicknameInput.focus();
+        showNotification('⚠️ Ошибка', 'Ник должен содержать минимум 3 символа.', 'info', 2500);
+        return;
+    }
+    if (/\s/.test(nickname)) {
+        nicknameInput.classList.add('error');
+        nicknameInput.focus();
+        showNotification('⚠️ Ошибка', 'Ник не должен содержать пробелов.', 'info', 2500);
+        return;
+    }
+
+    var box = currentBox;
+    closeModal();
+
+    showNotification(
+        '✅ Оплата прошла!',
+        'Вы купили <strong>' + box.name + '</strong> бокс за <strong>' + box.price + ' ₽</strong>.<br>Ник: <strong>' + escapeHtml(nickname) + '</strong>',
+        'success', 5000
+    );
+
+    showNotification(
+        '🛒 Новая покупка!',
+        'Игрок <strong>' + escapeHtml(nickname) + '</strong> купил <strong>' + box.name + '</strong> бокс за <strong>' + box.price + ' ₽</strong>!',
+        'purchase', 6000
+    );
+
+    addMessage(nickname, box.name, box.price);
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+    renderBoxes();
+    renderMessages();
+
+    cancelBtn.addEventListener('click', closeModal);
+    payBtn.addEventListener('click', handlePayment);
+
+    nicknameInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); handlePayment(); }
+    });
+    nicknameInput.addEventListener('input', function() { nicknameInput.classList.remove('error'); });
+
+    modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) closeModal();
+    });
+
+    inboxBtn.addEventListener('click', openPasswordModal);
+    inboxClose.addEventListener('click', function() { inboxPanel.classList.remove('open'); });
+    markAllBtn.addEventListener('click', markAllAsRead);
+
+    passwordCancel.addEventListener('click', closePasswordModal);
+    passwordSubmit.addEventListener('click', checkPassword);
+    passwordInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); checkPassword(); }
+    });
+    passwordInput.addEventListener('input', function() { passwordInput.classList.remove('error'); });
+
+    passwordOverlay.addEventListener('click', function(e) {
+        if (e.target === passwordOverlay) closePasswordModal();
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (modalOverlay.classList.contains('active')) closeModal();
+            if (passwordOverlay.classList.contains('active')) closePasswordModal();
+        }
+    });
+
+    setTimeout(function() {
+        showNotification('🎮 Добро пожаловать!', 'Выберите бокс и нажмите «КУПИТЬ».', 'info', 3500);
+    }, 500);
+});
+</script>
+</body>
+</html>
