@@ -3,687 +3,454 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎰 Казик</title>
+<title>Vanilla Classic Craft — Правила сервера</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
-    background: radial-gradient(ellipse at center, #1a0033 0%, #0a0010 70%, #000 100%);
-    min-height: 100vh;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 20px;
-    color: #fff;
-    overflow-x: hidden;
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
   }
 
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background:
-      radial-gradient(circle at 20% 30%, rgba(255, 200, 0, 0.08) 0%, transparent 40%),
-      radial-gradient(circle at 80% 70%, rgba(255, 0, 150, 0.08) 0%, transparent 40%);
-    pointer-events: none;
-    z-index: 0;
+  body {
+    background: linear-gradient(135deg, #1a2a1a 0%, #0f1a0f 50%, #1a2a1a 100%);
+    color: #e8e8e8;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 20px;
   }
 
   .container {
-    position: relative;
-    z-index: 1;
-    display: flex; flex-direction: column;
-    align-items: center;
-    gap: 24px;
     max-width: 900px;
+    margin: 0 auto;
+    background: rgba(20, 30, 20, 0.85);
+    border: 2px solid #4a7c4a;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 0 40px rgba(74, 124, 74, 0.3);
+  }
+
+  /* === Верхний блок с IP === */
+  .ip-block {
+    background: linear-gradient(135deg, #2d4a2d, #1a2a1a);
+    border: 2px solid #6ab06a;
+    border-radius: 12px;
+    padding: 25px 20px;
+    text-align: center;
+    margin-bottom: 25px;
+    box-shadow: 0 0 20px rgba(106, 176, 106, 0.4);
+  }
+
+  .ip-label {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #a8d8a8;
+    margin-bottom: 10px;
+  }
+
+  .ip-address {
+    font-size: 28px;
+    font-weight: bold;
+    color: #7fff7f;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 10px rgba(127, 255, 127, 0.6);
+    word-break: break-all;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    margin-bottom: 15px;
+  }
+
+  .copy-btn {
+    background: linear-gradient(135deg, #4a9c4a, #2d6b2d);
+    color: #fff;
+    border: 2px solid #7fff7f;
+    border-radius: 8px;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(127, 255, 127, 0.3);
+  }
+
+  .copy-btn:hover {
+    background: linear-gradient(135deg, #5ebc5e, #3d8b3d);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(127, 255, 127, 0.5);
+  }
+
+  .copy-btn:active {
+    transform: translateY(0);
+  }
+
+  .copy-btn.copied {
+    background: linear-gradient(135deg, #ffcc00, #cc9900);
+    border-color: #ffdd55;
+    color: #1a2a1a;
+  }
+
+  .notice {
+    margin-top: 15px;
+    padding: 12px 18px;
+    background: rgba(255, 204, 0, 0.15);
+    border-left: 4px solid #ffcc00;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #ffe680;
+    text-align: left;
+  }
+
+  .notice strong {
+    color: #ffdd55;
+  }
+
+  /* === Заголовок === */
+  .server-title {
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    color: #7fff7f;
+    margin: 25px 0 10px;
+    text-shadow: 0 0 15px rgba(127, 255, 127, 0.5);
+    letter-spacing: 1px;
+  }
+
+  .server-subtitle {
+    text-align: center;
+    color: #a8d8a8;
+    font-size: 15px;
+    margin-bottom: 30px;
+    font-style: italic;
+  }
+
+  /* === Правила === */
+  .rules-section h2 {
+    color: #7fff7f;
+    font-size: 22px;
+    margin: 30px 0 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #4a7c4a;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .rules-section h2::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #7fff7f;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #7fff7f;
+  }
+
+  .rules-section h3 {
+    color: #a8d8a8;
+    font-size: 16px;
+    margin: 15px 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .rules-section ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 15px;
+  }
+
+  .rules-section ul li {
+    padding: 8px 12px 8px 30px;
+    position: relative;
+    margin-bottom: 5px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .rules-section ul li:hover {
+    background: rgba(127, 255, 127, 0.08);
+  }
+
+  .rules-section ul li::before {
+    content: '▪';
+    position: absolute;
+    left: 12px;
+    color: #7fff7f;
+    font-weight: bold;
+  }
+
+  .rules-section ul.forbidden li::before {
+    content: '✖';
+    color: #ff6b6b;
+  }
+
+  .rules-section ul.allowed li::before {
+    content: '✔';
+    color: #7fff7f;
+  }
+
+  .highlight {
+    color: #ffdd55;
+    font-weight: bold;
+  }
+
+  .warning {
+    color: #ff6b6b;
+    font-weight: bold;
+  }
+
+  .divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #4a7c4a, transparent);
+    margin: 30px 0;
+  }
+
+  /* === Таблица наказаний === */
+  .punish-table {
     width: 100%;
-  }
-
-  h1 {
-    font-size: clamp(1.8rem, 5vw, 2.8rem);
-    background: linear-gradient(90deg, #ffd700, #ff9500, #ffd700);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-align: center;
-    letter-spacing: 3px;
-    font-weight: 900;
-    text-shadow: 0 0 40px rgba(255, 200, 0, 0.5);
-    animation: shine 3s linear infinite;
-  }
-
-  @keyframes shine {
-    to { background-position: 200% center; }
-  }
-
-  .balance-box {
-    background: linear-gradient(180deg, #2a1a40, #1a0a30);
-    border: 2px solid #6a4aaa;
-    border-radius: 20px;
-    padding: 16px 40px;
-    box-shadow: 0 0 30px rgba(150, 100, 255, 0.4), inset 0 0 20px rgba(100, 50, 200, 0.2);
-    text-align: center;
-  }
-
-  .balance-label {
-    font-size: 0.85rem;
-    letter-spacing: 4px;
-    color: #b090ff;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .balance-value {
-    font-size: 2.4rem;
-    font-weight: 900;
-    color: #ffd700;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
-    transition: transform 0.3s, color 0.3s;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .balance-value.pop {
-    transform: scale(1.25);
-    color: #7cfc00;
-    text-shadow: 0 0 30px rgba(124, 252, 0, 1);
-  }
-
-  .wheel-wrap {
-    position: relative;
-    width: min(500px, 90vw);
-    height: min(500px, 90vw);
-    filter: drop-shadow(0 0 40px rgba(255, 200, 0, 0.35));
-  }
-
-  .wheel-pointer {
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0; height: 0;
-    border-left: 22px solid transparent;
-    border-right: 22px solid transparent;
-    border-top: 42px solid #ffd700;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 12px rgba(255, 215, 0, 0.8));
-    z-index: 10;
-    pointer-events: none;
-  }
-
-  #wheel {
-    width: 100%; height: 100%;
-    border-radius: 50%;
-    box-shadow:
-      0 0 0 10px #2a1a40,
-      0 0 0 14px #ffd700,
-      0 0 0 20px #1a0a30,
-      0 0 0 24px #6a4aaa,
-      0 0 60px rgba(255, 200, 0, 0.4);
-    transition: filter 0.3s;
-    cursor: pointer;
-    display: block;
-  }
-
-  #wheel:hover { filter: brightness(1.15); }
-
-  .wheel-hub {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 22%; height: 22%;
-    border-radius: 50%;
-    background: radial-gradient(circle, #ffd700 0%, #ff9500 60%, #cc7000 100%);
-    box-shadow:
-      0 0 0 6px #1a0a30,
-      0 0 0 10px #6a4aaa,
-      inset 0 -4px 12px rgba(0, 0, 0, 0.4),
-      0 0 30px rgba(255, 215, 0, 0.8);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.6rem;
-    z-index: 5;
-    pointer-events: none;
-  }
-
-  .spin-btn {
-    padding: 18px 70px;
-    font-size: 1.4rem;
-    font-weight: 900;
-    letter-spacing: 4px;
-    color: #1a0a30;
-    background: linear-gradient(180deg, #ffd700, #ff9500);
-    border: none;
-    border-radius: 60px;
-    cursor: pointer;
-    box-shadow:
-      0 8px 0 #a06000,
-      0 12px 30px rgba(255, 150, 0, 0.5);
-    transition: all 0.1s;
-    text-transform: uppercase;
-    font-family: inherit;
-    position: relative;
+    border-collapse: collapse;
+    margin: 15px 0;
+    border-radius: 8px;
     overflow: hidden;
   }
 
-  .spin-btn:hover:not(:disabled) {
-    background: linear-gradient(180deg, #ffe040, #ffa020);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 0 #a06000, 0 16px 40px rgba(255, 150, 0, 0.7);
-  }
-
-  .spin-btn:active:not(:disabled) {
-    transform: translateY(6px);
-    box-shadow: 0 2px 0 #a06000, 0 4px 12px rgba(255, 150, 0, 0.5);
-  }
-
-  .spin-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    filter: grayscale(0.4);
-  }
-
-  .spin-btn::after {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-    animation: btn-shine 3s ease-in-out infinite;
-  }
-
-  @keyframes btn-shine {
-    0%, 100% { left: -100%; }
-    50% { left: 100%; }
-  }
-
-  .win-modal {
-    position: fixed; inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-    z-index: 100;
-    padding: 20px;
-  }
-
-  .win-modal.show {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .win-content {
-    background: linear-gradient(180deg, #2a1a40, #1a0a30);
-    border: 3px solid #ffd700;
-    border-radius: 30px;
-    padding: 40px 50px;
-    text-align: center;
-    box-shadow: 0 0 60px rgba(255, 215, 0, 0.6), inset 0 0 40px rgba(255, 200, 0, 0.15);
-    max-width: 420px;
-    width: 100%;
-    transform: scale(0.7);
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  .win-modal.show .win-content {
-    transform: scale(1);
-  }
-
-  .win-emoji {
-    font-size: 5rem;
-    margin-bottom: 10px;
-    animation: bounce 1s ease infinite;
-  }
-
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
-  }
-
-  .win-title {
-    font-size: 1.6rem;
-    color: #b090ff;
-    letter-spacing: 3px;
-    margin-bottom: 12px;
+  .punish-table th {
+    background: #2d4a2d;
+    color: #7fff7f;
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
     text-transform: uppercase;
+    letter-spacing: 1px;
   }
 
-  .win-amount {
-    font-size: 3.5rem;
-    font-weight: 900;
-    background: linear-gradient(90deg, #ffd700, #ffa000, #ffd700);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: shine 2s linear infinite;
-    margin-bottom: 16px;
-    filter: drop-shadow(0 0 20px rgba(255, 200, 0, 0.7));
+  .punish-table td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(74, 124, 74, 0.3);
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 14px;
   }
 
-  .win-btn {
-    padding: 14px 50px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    letter-spacing: 2px;
-    color: #1a0a30;
-    background: linear-gradient(180deg, #ffd700, #ff9500);
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    box-shadow: 0 5px 0 #a06000;
-    transition: all 0.1s;
-    font-family: inherit;
+  .punish-table tr:hover td {
+    background: rgba(127, 255, 127, 0.08);
   }
 
-  .win-btn:hover { background: linear-gradient(180deg, #ffe040, #ffa020); }
-  .win-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #a06000; }
-
-  .history {
-    width: 100%;
-    max-width: 500px;
-    background: rgba(30, 15, 50, 0.6);
-    border: 2px solid #4a2a80;
-    border-radius: 16px;
-    padding: 16px 20px;
-    max-height: 180px;
-    overflow-y: auto;
+  .punish-table tr:last-child td {
+    border-bottom: none;
   }
 
-  .history-title {
-    color: #b090ff;
-    font-size: 0.85rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: 10px;
+  /* === Футер === */
+  .footer {
     text-align: center;
-  }
-
-  .history-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 0;
-    border-bottom: 1px dashed #3a1a60;
-    font-size: 0.95rem;
-    animation: slide-in 0.3s;
-  }
-
-  @keyframes slide-in {
-    from { opacity: 0; transform: translateX(-20px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  .history-item:last-child { border-bottom: none; }
-  .history-item .h-time { color: #8060a0; font-size: 0.8rem; }
-  .history-item .h-prize { color: #ffd700; font-weight: bold; }
-
-  .history-empty {
-    text-align: center;
-    color: #6a4a90;
-    font-style: italic;
+    margin-top: 30px;
     padding: 20px;
-    font-size: 0.9rem;
+    background: rgba(45, 74, 45, 0.4);
+    border-radius: 10px;
+    color: #a8d8a8;
+    font-size: 14px;
   }
 
-  .history::-webkit-scrollbar { width: 8px; }
-  .history::-webkit-scrollbar-track { background: #1a0a30; border-radius: 4px; }
-  .history::-webkit-scrollbar-thumb { background: #6a4aaa; border-radius: 4px; }
-
-  .particle {
-    position: fixed;
-    pointer-events: none;
-    z-index: 200;
-    font-size: 1.5rem;
-    animation: fall 2s ease-out forwards;
+  .footer strong {
+    color: #7fff7f;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 16px;
   }
 
-  @keyframes fall {
-    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-  }
-
+  /* === Адаптив === */
   @media (max-width: 600px) {
-    .balance-value { font-size: 1.8rem; }
-    .spin-btn { padding: 14px 50px; font-size: 1.1rem; }
-    .win-content { padding: 30px 25px; }
-    .win-amount { font-size: 2.5rem; }
+    .container { padding: 18px; }
+    .ip-address { font-size: 20px; }
+    .server-title { font-size: 24px; }
+    .rules-section h2 { font-size: 18px; }
+    .punish-table { font-size: 12px; }
+    .punish-table th, .punish-table td { padding: 8px; }
   }
 </style>
 </head>
 <body>
-
 <div class="container">
-  <h1>🎰 КАЗИК 🎰</h1>
 
-  <div class="balance-box">
-    <div class="balance-label">Ваш баланс</div>
-    <div class="balance-value" id="balance">0 ₽</div>
-  </div>
-
-  <div class="wheel-wrap">
-    <div class="wheel-pointer"></div>
-    <canvas id="wheel" width="1000" height="1000"></canvas>
-    <div class="wheel-hub">🎁</div>
-  </div>
-
-  <button class="spin-btn" id="spinBtn">КРУТИТЬ</button>
-
-  <div class="history">
-    <div class="history-title">📜 История выигрышей</div>
-    <div id="historyList">
-      <div class="history-empty">Пока нет выигрышей — крутите колесо!</div>
+  <!-- === IP СЕРВЕРА === -->
+  <div class="ip-block">
+    <div class="ip-label">🌐 IP-адрес сервера</div>
+    <div class="ip-address" id="serverIP">drake-doris.tun.ply.gg</div>
+    <button class="copy-btn" id="copyBtn" onclick="copyIP()">📋 Скопировать IP</button>
+    <div class="notice">
+      <strong>⚠️ Важно:</strong> если отправляешь IP другу — <strong>скинь ему и эти правила</strong>.
+      Играем спокойно, без читов, гриферства и токсичности. Все, кто заходит на сервер, автоматически соглашаются с правилами ниже.
     </div>
   </div>
-</div>
 
-<div class="win-modal" id="winModal">
-  <div class="win-content">
-    <div class="win-emoji" id="winEmoji">🎉</div>
-    <div class="win-title" id="winTitle">Вы выиграли!</div>
-    <div class="win-amount" id="winAmount">100 ₽</div>
-    <button class="win-btn" id="winBtn">ЗАБРАТЬ</button>
+  <!-- === НАЗВАНИЕ === -->
+  <div class="server-title">Vanilla Classic Craft</div>
+  <div class="server-subtitle">Классика без агрессии</div>
+
+  <div class="divider"></div>
+
+  <!-- === ПРАВИЛА === -->
+  <div class="rules-section">
+
+    <h2>1. Читы и сторонние модификации</h2>
+    <h3>Запрещено:</h3>
+    <ul class="forbidden">
+      <li>X-Ray, Fly, KillAura, AimBot, Reach, ESP, FreeCam, Nuker, FastPlace, Baritone и любые подобные читы.</li>
+      <li>Автокликеры, макросы, скрипты, автопостройка, автокрафт, автобой.</li>
+      <li>Любые моды, дающие преимущество перед другими игроками.</li>
+      <li>Багоюз: дюпы, проход через блоки, выход за границы мира, использование ошибок сервера.</li>
+    </ul>
+    <h3>Разрешено:</h3>
+    <ul class="allowed">
+      <li>OptiFine, Sodium, Lithium, Iris, шейдеры.</li>
+      <li>Миникарта <strong>без</strong> радара игроков, сундуков и мобов.</li>
+      <li>Косметические моды, не влияющие на геймплей.</li>
+    </ul>
+    <p style="color:#ffcc00; font-size:14px;">Если сомневаешься — спроси у администрации до установки.</p>
+
+    <h2>2. Скины, ники и плащи</h2>
+    <h3>Запрещены:</h3>
+    <ul class="forbidden">
+      <li>Скины с нацистской символикой, свастикой, символами SS, портретами Гитлера и других военных преступников.</li>
+      <li>Экстремистские, террористические, расистские и дискриминационные символы.</li>
+      <li>Скины 18+, шокирующие, оскорбительные или связанные с насилием.</li>
+      <li>Ники и плащи с матом, оскорблениями, пропагандой ненависти.</li>
+    </ul>
+    <h3>Разрешено:</h3>
+    <ul class="allowed">
+      <li>Нейтральные, фэнтези, мемные, тематические скины — если они не нарушают правила выше.</li>
+    </ul>
+    <p class="warning">Запрещённый скин = бан без предупреждения до смены скина.</p>
+
+    <h2>3. Гриферство и воровство</h2>
+    <h3>Запрещено:</h3>
+    <ul class="forbidden">
+      <li>Ломать, ставить блоки или как-либо менять чужие постройки без разрешения.</li>
+      <li>Воровать из сундуков, убивать чужих питомцев, угонять лошадей и других мобов.</li>
+      <li>Заливать чужие базы лавой/водой, ставить TNT, ловушки, ямы.</li>
+      <li>Портить ландшафт рядом с чужими базами.</li>
+      <li>Строить вплотную к чужой базе без согласия хозяина.</li>
+    </ul>
+    <h3>Разрешено:</h3>
+    <ul class="allowed">
+      <li>Строить в диких, свободных местах.</li>
+      <li>Просить разрешение у владельца, если хочешь что-то сделать рядом.</li>
+    </ul>
+
+    <h2>4. Общение и поведение</h2>
+    <h3>Запрещено:</h3>
+    <ul class="forbidden">
+      <li>Мат, оскорбления, унижение, травля, угрозы.</li>
+      <li>Расизм, сексизм, дискриминация по любому признаку.</li>
+      <li>Политическая и религиозная агрессия, пропаганда ненависти.</li>
+      <li>Спам, флуд, капс, провокации, токсичное поведение.</li>
+      <li>Обсуждение запрещённых тем: экстремизм, насилие, 18+ контент.</li>
+    </ul>
+    <h3>Разрешено:</h3>
+    <ul class="allowed">
+      <li>Дружеское общение, шутки без оскорблений.</li>
+      <li>Помощь новичкам, совместные проекты, обмен ресурсами.</li>
+    </ul>
+    <p style="color:#ffcc00; font-size:14px;">Правило простое: не делай другим того, чего не хочешь себе.</p>
+
+    <h2>5. PvP и агрессия</h2>
+    <ul class="forbidden">
+      <li>PvP без согласия обеих сторон.</li>
+      <li>Убийство новичков, добивание, спавн-килл.</li>
+      <li>Ловушки на спавне и в общественных местах.</li>
+      <li>Мешать другим играть: толкать в лаву, заводить мобов, портить мероприятия.</li>
+    </ul>
+    <p style="color:#a8d8a8; font-size:14px;">Сервер <strong>мирный</strong>. Если хочешь PvP — только по взаимному согласию и в специально отведённом месте.</p>
+
+    <h2>6. Реклама и спам</h2>
+    <ul class="forbidden">
+      <li>Реклама других серверов, Discord, соцсетей, магазинов без разрешения администрации.</li>
+      <li>Спам в чате, личные сообщения с рекламой.</li>
+      <li>Попрошайничество у администрации (деньги, вещи, креатив, оператор).</li>
+    </ul>
+
+    <h2>7. Наказания</h2>
+    <table class="punish-table">
+      <thead>
+        <tr>
+          <th>Нарушение</th>
+          <th>Наказание</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Лёгкий мат, спам</td><td>Предупреждение / мут 1 час</td></tr>
+        <tr><td>Оскорбления, токсичность</td><td>Мут 1–7 дней</td></tr>
+        <tr><td>Гриферство, воровство</td><td>Бан 7–30 дней</td></tr>
+        <tr><td>Читы, X-Ray, багоюз</td><td>Бан навсегда</td></tr>
+        <tr><td>Запрещённый скин, нацизм, экстремизм</td><td>Бан навсегда</td></tr>
+        <tr><td>Реклама</td><td>Мут 7 дней / бан 30 дней</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:14px; color:#a8d8a8;">Администрация может выдать наказание строже, если нарушение серьёзное или повторное.</p>
+
+    <h2>8. Администрация</h2>
+    <ul>
+      <li>Администрация не выдаёт вещи, креатив, оператор и не вмешивается в игровой процесс без причины.</li>
+      <li>Администрация может трактовать спорные ситуации по своему усмотрению.</li>
+      <li>Незнание правил <strong>не освобождает</strong> от ответственности.</li>
+    </ul>
+
   </div>
+
+  <div class="footer">
+    <strong>Vanilla Classic Craft</strong>
+    Соглашаясь играть на сервере, ты автоматически принимаешь эти правила.<br>
+    Играем честно, спокойно и с уважением друг к другу. 🌿
+  </div>
+
 </div>
 
 <script>
-// ============================================
-// КАЗИК — КОЛЕСО ФОРТУНЫ
-// ============================================
+  function copyIP() {
+    const ip = document.getElementById('serverIP').innerText;
+    const btn = document.getElementById('copyBtn');
 
-const canvas = document.getElementById('wheel');
-const ctx = canvas.getContext('2d');
-const spinBtn = document.getElementById('spinBtn');
-const balanceEl = document.getElementById('balance');
-const historyList = document.getElementById('historyList');
-const winModal = document.getElementById('winModal');
-const winAmount = document.getElementById('winAmount');
-const winEmoji = document.getElementById('winEmoji');
-const winTitle = document.getElementById('winTitle');
-const winBtn = document.getElementById('winBtn');
-
-const PRIZES = [
-  { value: 10,    color: '#4a2a80' },
-  { value: 50,    color: '#6a3aaa' },
-  { value: 100,   color: '#4a2a80' },
-  { value: 0,     color: '#2a1a40', label: 'Пусто' },
-  { value: 250,   color: '#6a3aaa' },
-  { value: 500,   color: '#4a2a80' },
-  { value: 25,    color: '#6a3aaa' },
-  { value: 1000,  color: '#8a4ac0' },
-  { value: 75,    color: '#4a2a80' },
-  { value: 0,     color: '#2a1a40', label: 'Пусто' },
-  { value: 150,   color: '#6a3aaa' },
-  { value: 5000,  color: '#b060e0' }
-];
-
-const SEGMENTS = PRIZES.length;
-const SEGMENT_ANGLE = (Math.PI * 2) / SEGMENTS;
-
-let currentRotation = 0;
-let isSpinning = false;
-let balance = 0;
-
-function drawWheel() {
-  const cx = canvas.width / 2;
-  const cy = canvas.height / 2;
-  const radius = canvas.width / 2 - 20;
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(cx, cy + 8, radius, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-  ctx.filter = 'blur(20px)';
-  ctx.fill();
-  ctx.restore();
-
-  for (let i = 0; i < SEGMENTS; i++) {
-    const start = i * SEGMENT_ANGLE + currentRotation;
-    const end = start + SEGMENT_ANGLE;
-
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, radius, start, end);
-    ctx.closePath();
-    ctx.fillStyle = PRIZES[i].color;
-    ctx.fill();
-
-    ctx.strokeStyle = 'rgba(255, 215, 0, 0.3)';
-    ctx.lineWidth = 3;
-    ctx.stroke();
-
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.rotate(start + SEGMENT_ANGLE / 2);
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-
-    const prize = PRIZES[i];
-    const text = prize.label || (prize.value + ' ₽');
-
-    if (prize.value >= 1000) {
-      ctx.shadowColor = '#ffd700';
-      ctx.shadowBlur = 25;
-    }
-
-    ctx.fillStyle = prize.value === 0 ? '#8a7a9a' : '#ffffff';
-    ctx.font = 'bold 46px "Segoe UI", Arial, sans-serif';
-    ctx.fillText(text, radius - 40, 0);
-    ctx.restore();
-  }
-
-  ctx.beginPath();
-  ctx.arc(cx, cy, radius * 0.85, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(255, 215, 0, 0.15)';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.arc(cx, cy, radius * 0.6, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(255, 215, 0, 0.1)';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-  ctx.strokeStyle = '#ffd700';
-  ctx.lineWidth = 8;
-  ctx.stroke();
-
-  for (let i = 0; i < SEGMENTS * 2; i++) {
-    const angle = (i / (SEGMENTS * 2)) * Math.PI * 2 + currentRotation;
-    const x = cx + Math.cos(angle) * (radius - 15);
-    const y = cy + Math.sin(angle) * (radius - 15);
-    ctx.beginPath();
-    ctx.arc(x, y, 6, 0, Math.PI * 2);
-    ctx.fillStyle = i % 2 === 0 ? '#ffd700' : '#ff9500';
-    ctx.shadowColor = '#ffd700';
-    ctx.shadowBlur = 10;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-  }
-}
-
-function spin() {
-  if (isSpinning) return;
-  isSpinning = true;
-  spinBtn.disabled = true;
-  spinBtn.textContent = 'КРУТИТСЯ...';
-
-  const prizeIndex = pickRandomPrize();
-  const prize = PRIZES[prizeIndex];
-
-  const targetSegmentCenter = prizeIndex * SEGMENT_ANGLE + SEGMENT_ANGLE / 2;
-  const fullTurns = 5 + Math.floor(Math.random() * 4);
-  const baseAngle = -Math.PI / 2 - targetSegmentCenter;
-  const jitter = (Math.random() - 0.5) * SEGMENT_ANGLE * 0.6;
-
-  let targetRotation = baseAngle + jitter;
-  while (targetRotation < currentRotation + fullTurns * Math.PI * 2) {
-    targetRotation += Math.PI * 2;
-  }
-
-  const startRotation = currentRotation;
-  const totalDelta = targetRotation - startRotation;
-  const duration = 5000 + Math.random() * 1000;
-  const startTime = performance.now();
-
-  function animateSpin(now) {
-    const elapsed = now - startTime;
-    const t = Math.min(elapsed / duration, 1);
-    const ease = 1 - Math.pow(1 - t, 5);
-
-    currentRotation = startRotation + totalDelta * ease;
-    drawWheel();
-
-    if (t < 1) {
-      requestAnimationFrame(animateSpin);
+    // Современный API
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(ip).then(() => {
+        showCopied(btn);
+      }).catch(() => {
+        fallbackCopy(ip, btn);
+      });
     } else {
-      currentRotation = targetRotation % (Math.PI * 2);
-      drawWheel();
-      onSpinEnd(prize);
+      fallbackCopy(ip, btn);
     }
   }
 
-  requestAnimationFrame(animateSpin);
-}
-
-function pickRandomPrize() {
-  const weights = PRIZES.map(p => {
-    if (p.value === 0) return 15;
-    if (p.value <= 25) return 20;
-    if (p.value <= 100) return 15;
-    if (p.value <= 250) return 8;
-    if (p.value <= 500) return 4;
-    if (p.value <= 1000) return 2;
-    return 0.5;
-  });
-
-  const total = weights.reduce((s, w) => s + w, 0);
-  let r = Math.random() * total;
-  for (let i = 0; i < weights.length; i++) {
-    r -= weights[i];
-    if (r <= 0) return i;
-  }
-  return 0;
-}
-
-function onSpinEnd(prize) {
-  isSpinning = false;
-  spinBtn.disabled = false;
-  spinBtn.textContent = 'КРУТИТЬ ЕЩЁ';
-
-  addToHistory(prize);
-
-  if (prize.value > 0) {
-    balance += prize.value;
-    updateBalance(true);
-    spawnParticles();
-  } else {
-    updateBalance(false);
-  }
-
-  showWinModal(prize);
-}
-
-function showWinModal(prize) {
-  if (prize.value === 0) {
-    winEmoji.textContent = '😢';
-    winTitle.textContent = 'Не повезло...';
-    winAmount.textContent = 'Пусто';
-    winAmount.style.filter = 'grayscale(1)';
-  } else if (prize.value >= 1000) {
-    winEmoji.textContent = '💎';
-    winTitle.textContent = 'ДЖЕКПОТ!';
-    winAmount.textContent = prize.value + ' ₽';
-    winAmount.style.filter = '';
-  } else if (prize.value >= 250) {
-    winEmoji.textContent = '🏆';
-    winTitle.textContent = 'Крупный выигрыш!';
-    winAmount.textContent = prize.value + ' ₽';
-    winAmount.style.filter = '';
-  } else {
-    winEmoji.textContent = '🎉';
-    winTitle.textContent = 'Вы выиграли!';
-    winAmount.textContent = prize.value + ' ₽';
-    winAmount.style.filter = '';
-  }
-
-  winModal.classList.add('show');
-}
-
-winBtn.addEventListener('click', () => {
-  winModal.classList.remove('show');
-});
-
-function updateBalance(pop) {
-  balanceEl.textContent = balance.toLocaleString('ru-RU') + ' ₽';
-  if (pop) {
-    balanceEl.classList.add('pop');
-    setTimeout(() => balanceEl.classList.remove('pop'), 300);
-  }
-}
-
-function addToHistory(prize) {
-  const empty = historyList.querySelector('.history-empty');
-  if (empty) empty.remove();
-
-  const item = document.createElement('div');
-  item.className = 'history-item';
-
-  const time = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-
-  if (prize.value === 0) {
-    item.innerHTML = `<span>😢 Пусто</span><span class="h-time">${time}</span>`;
-  } else {
-    item.innerHTML = `<span class="h-time">${time}</span><span class="h-prize">+${prize.value} ₽</span>`;
-  }
-
-  historyList.insertBefore(item, historyList.firstChild);
-
-  while (historyList.children.length > 20) {
-    historyList.removeChild(historyList.lastChild);
-  }
-}
-
-function spawnParticles() {
-  const emojis = ['💰', '💎', '🪙', '✨', '🎉', '⭐', '🏆'];
-  const count = 30;
-
-  for (let i = 0; i < count; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-    p.style.left = Math.random() * 100 + 'vw';
-    p.style.top = '-50px';
-    p.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
-    p.style.animationDelay = (Math.random() * 0.5) + 's';
-    p.style.animationDuration = (1.5 + Math.random() * 1.5) + 's';
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 3500);
-  }
-}
-
-spinBtn.addEventListener('click', spin);
-canvas.addEventListener('click', spin);
-
-winModal.addEventListener('click', (e) => {
-  if (e.target === winModal) winModal.classList.remove('show');
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.code === 'Space') {
-    e.preventDefault();
-    if (winModal.classList.contains('show')) {
-      winModal.classList.remove('show');
-    } else {
-      spin();
+  function fallbackCopy(text, btn) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      showCopied(btn);
+    } catch (e) {
+      alert('Не удалось скопировать. IP: ' + text);
     }
+    document.body.removeChild(textarea);
   }
-});
 
-drawWheel();
-updateBalance(false);
+  function showCopied(btn) {
+    const original = btn.innerHTML;
+    btn.innerHTML = '✅ Скопировано!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = original;
+      btn.classList.remove('copied');
+    }, 2000);
+  }
 </script>
 </body>
 </html>
